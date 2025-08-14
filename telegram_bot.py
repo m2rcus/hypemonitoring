@@ -299,7 +299,7 @@ async def main():
     # Create bot instance
     bot = HypeBot()
     
-    # Create application
+    # Create application with explicit parameters
     application = Application.builder().token(TELEGRAM_BOT_TOKEN).build()
     
     # Add command handlers
@@ -312,9 +312,13 @@ async def main():
     # Start monitoring in background
     asyncio.create_task(bot.start_monitoring(application))
     
-    # Start the bot
+    # Start the bot with error handling
     logger.info("Starting HypeBot...")
-    await application.run_polling()
+    try:
+        await application.run_polling(allowed_updates=Update.ALL_TYPES)
+    except Exception as e:
+        logger.error(f"Error starting bot: {e}")
+        raise
 
 if __name__ == "__main__":
     asyncio.run(main()) 
